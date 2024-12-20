@@ -8,6 +8,7 @@ Please don't use this repo or my code for evil reasons. Please and thank you.
 
 2. Write malicious library
 1. Create an open port (X) -> encrypt the connection
-3. Hide the open port
-4. Hide the library from ldd
+3. Hide the open port -> i think i should hook open. when open reads the file for my connection, just ignore it and dont write anything
+4. Hide process
+5. Hide file
 5. Provide encrypted password protected backdoor

